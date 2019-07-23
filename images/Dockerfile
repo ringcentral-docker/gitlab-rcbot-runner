@@ -1,0 +1,9 @@
+FROM python:3.6
+
+WORKDIR /opt/app
+
+RUN pip install pipenv
+RUN pipenv --python 3.6
+RUN apt update -y
+RUN apt install zip -y
+RUN pip install awscli
