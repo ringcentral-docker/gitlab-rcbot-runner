@@ -1,0 +1,21 @@
+sudo: required
+language: ruby
+services:
+- docker
+env:
+  global:
+  - IMAGE_NAME=ringcentral/gitlab-rcbot-runner
+  - secure: O5U7OrgSLmb7V/GaUFYWX/UGxCQNsAQttRZCjGh6+JasN4lBDVqe5WSb1CX2ha+3hKXQrGpkh1F5LK63Sfq+L8ncF9xdQF2SMf9S/GT6IL5Xe5iw5Qo2D8FCUse5a24gyeKxgfDJS1bvvFgF/Zr+9zDMhG7Ht+GoeuLJ226lUYoezSgu3EFAHm7ZXchz82cPKmJERXgOrIF/SwGlzGXQ22hN0ViX8eBH85zGrzA7eXeZxryBKva7vQ2XztGdRIje+gdsh9NYcCWQF8Fw8e1SLyXuFhUoUQLoFDOL9ltRWGouBOPxAMkzHiA4dUgbxr0uBX8VXpOeFng0S1ha5bxgoBFq+tQKN16vevxOG9ksDL+e6RvuqqQpgzIe9whXOSW2ilRXyxRJk7TeEq4N1hQHZxjQsh1Oui+uophh7/LSXjr3z3vJEcvVgpt0MXgeQE0ECnxD4pggm2dxU/1WwiMFrvBMQHx38wVHQblH/U+gz5X8itsVgMF0YpR9yq2T+/QaTpP3/HgbBN7/Bh54vxZ6WEzuL/h5IdqRsXExnzvFdYKat+Vhek6k6HiyShzfk4gGJVEuMCOuwa0dslraig0gjToXjwGZd0a/G5DGbzxG44/niTv2sQ36FA4pa3LRAGTLcKa/3Aywb9gTEhQGA/jnEeGzwnv1fJjCelXhhV88s+M=
+  - secure: G49YKwvTt9qZfaIfpwiJi8poPXPp5dQM2HXztz2QRSHsqaOuuMnC4aydEC5IA78ehDAvAGupHWewsv/TY7NF+7Sqr+fcxAZ78yNSBt6IeXrKA7XkZxY8QNVE8OYZjszVe47UJzlle01NVy5VTPWupdpBHLCEbDkb7XSTs8nmg/vvn+LMxbqNHYB+sOo+2E/GuvPTH7L0NaothqKrLmP5lSlcDggEN75efUiM+v9NpjQNX3tXmbSRurhoyp+RQs7UcwC4/CHJqR7RIiqfNoj+SNh703LyiY4qMOI/z14poCRAr66DHxDzm7s6p3mCkxsd1IL1PTOCOAGgfqnzqKa0F7X4OeqU7Lw3cw7ndAAj0/drZv1T6EnXjxF/RUq04p5Taduny8GQKz/cD9H0sshBksbgCG7ydB996uMELUl/m9yRE8UhGPq2Z07jjLodXokrRl3eMZNYEmXDpR3UVEcaKcUH0Me+IKS7q36sCgxOgWwpEwP6Vv58ecy7F1tIBVKPLBeoOc/9rRyTCKYNF1y9UuzEbUvJwNXiCsbdWHrg0GlxYu0NjDiuY5LJi7NHBuJJPnS6+XxOybiXxPu62R3uiIc+Q8bvF3O93lr45BcisXiiS06CcoHUMoikzzMGG13oKIFt1DlXuq2KYWRnmVSrovvlfZfpjZ2ileYP/FqpUU8=
+before_script:
+script:
+- docker build -t "$IMAGE_NAME" -f "Dockerfile" .
+after_script:
+- docker images
+before_deploy:
+- docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+deploy:
+  provider: script
+  script: docker push "${IMAGE_NAME}:latest"
+  on:
+    branch: master
