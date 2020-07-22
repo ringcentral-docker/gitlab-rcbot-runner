@@ -1,0 +1,25 @@
+name: Build gitlab-bot-runner
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      # '*' matches any character except '/'
+      - 'image/*'
+      - '.github/workflows/*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dockerfileName: [python, node]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Build & Push Image
+        run: |
+          cd image
+          IMAGE_NAME=ringcentral/gitlab-rcbot-runner
+          docker build -t "${IMAGE_NAME}:${{ matrix.dockerfileName }}" -f "Dockerfile.${{ matrix.dockerfileName }}" .
