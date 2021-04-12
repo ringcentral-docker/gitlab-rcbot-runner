@@ -22,4 +22,5 @@ jobs:
         run: |
           cd image
           IMAGE_NAME=ringcentral/gitlab-rcbot-runner
-          docker build -t "${IMAGE_NAME}:${{ matrix.dockerfileName }}" -f "Dockerfile.${{ matrix.dockerfileName }}" .
+          VERSION="$(awk -F '[:]'  '/FROM/ {print $2}' Dockerfile.${{ matrix.dockerfileName }})"
+          docker build -t "${IMAGE_NAME}:${{ matrix.dockerfileName }}${VERSION}" -f "Dockerfile.${{ matrix.dockerfileName }}" .
